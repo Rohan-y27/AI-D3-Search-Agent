@@ -38,3 +38,46 @@ def dfs(problem):
         "cost": None,
         "expanded": nodes_expanded
     }
+# algorithms.py
+
+from collections import deque
+
+
+def bfs(problem):
+    start = problem.initial_state()
+
+    queue = deque()
+    queue.append((start, [start.pos], 0))  # (state, path, cost)
+
+    visited = set()
+    visited.add(start)
+
+    nodes_expanded = 0
+
+    while queue:
+        state, path, cost = queue.popleft()
+        nodes_expanded += 1
+
+        if problem.is_goal(state):
+            return {
+                "algorithm": "BFS",
+                "path": path,
+                "cost": cost,
+                "expanded": nodes_expanded
+            }
+
+        for next_state, edge_cost in problem.get_successors(state):
+            if next_state not in visited:
+                visited.add(next_state)
+                queue.append((
+                    next_state,
+                    path + [next_state.pos],
+                    cost + edge_cost
+                ))
+
+    return {
+        "algorithm": "BFS",
+        "path": None,
+        "cost": None,
+        "expanded": nodes_expanded
+    }
