@@ -39,7 +39,7 @@ def dfs(problem):
         "expanded": nodes_expanded
     }
 
-
+#starting BFS
 from collections import deque
 
 
