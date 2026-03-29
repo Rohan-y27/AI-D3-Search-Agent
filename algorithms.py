@@ -38,7 +38,7 @@ def dfs(problem):
         "cost": None,
         "expanded": nodes_expanded
     }
-# algorithms.py
+
 
 from collections import deque
 
