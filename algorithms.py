@@ -81,3 +81,51 @@ def bfs(problem):
         "cost": None,
         "expanded": nodes_expanded
     }
+#starting A*
+import heapq
+
+
+def astar(problem):
+    start = problem.initial_state()
+
+    # (cost, state, path)
+    heap = []
+    heapq.heappush(heap, (0, start, [start.pos]))
+
+    visited = {}
+
+    nodes_expanded = 0
+
+    while heap:
+        g, state, path = heapq.heappop(heap)
+        nodes_expanded += 1
+
+        # skip if already visited with lower cost
+        if state in visited and visited[state] <= g:
+            continue
+
+        visited[state] = g
+
+        if problem.is_goal(state):
+            return {
+                "algorithm": "A*",
+                "path": path,
+                "cost": g,
+                "expanded": nodes_expanded
+            }
+
+        for next_state, edge_cost in problem.get_successors(state):
+            new_cost = g + edge_cost
+
+            heapq.heappush(heap, (
+                new_cost,
+                next_state,
+                path + [next_state.pos]
+            ))
+
+    return {
+        "algorithm": "A*",
+        "path": None,
+        "cost": None,
+        "expanded": nodes_expanded
+    }
