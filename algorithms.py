@@ -83,21 +83,22 @@ def bfs(problem):
     }
 #starting A*
 import heapq
+from heuristics import heuristic
 
 
 def astar(problem):
     start = problem.initial_state()
 
-    # (cost, state, path)
+    # (f, g, state, path)
     heap = []
-    heapq.heappush(heap, (0, start, [start.pos]))
+    heapq.heappush(heap, (0, 0, start, [start.pos]))
 
     visited = {}
 
     nodes_expanded = 0
 
     while heap:
-        g, state, path = heapq.heappop(heap)
+        f, g, state, path = heapq.heappop(heap)
         nodes_expanded += 1
 
         # skip if already visited with lower cost
@@ -115,10 +116,13 @@ def astar(problem):
             }
 
         for next_state, edge_cost in problem.get_successors(state):
-            new_cost = g + edge_cost
+            new_g = g + edge_cost
+            h = heuristic(next_state, problem)
+            new_f = new_g + h
 
             heapq.heappush(heap, (
-                new_cost,
+                new_f,
+                new_g,
                 next_state,
                 path + [next_state.pos]
             ))
