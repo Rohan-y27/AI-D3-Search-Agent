@@ -45,3 +45,6 @@ No external packages needed - just Python 3.8+.
 | Hard | 6 | FM→RAM, DOM→SR, ANC→VK, LOT→BHG, CNOT→RP, FM→VYS |
 
 All start and end at Malviya Bhawan (node 8).
+## Demo Video
+
+Watch here: https://drive.google.com/file/d/1vaSq4-loIarBi08fFVsKgtW7HOnu-2h6/view?usp=share_link
