@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>D3 Visualization - Group 29</title>
+<style>
+  /* basic dark theme */
+  body {
+    margin: 0;
+    font-family: Consolas, 'Courier New', monospace;
+    background: #111;
+    color: #ddd;
+  }
+  .top-bar {
+    padding: 12px 20px;
+    background: #1a1a1a;
+    border-bottom: 1px solid #333;
+    font-size: 14px;
+  }
+  .top-bar b { color: #4fc3f7; }
+
+  .wrapper {
+    display: flex;
+    height: calc(100vh - 45px);
+  }
+  .graph-area {
+    flex: 1;
+    position: relative;
+  }
+  canvas { width: 100%; height: 100%; display: block; }
+
+  .panel {
+    width: 340px;
+    background: #1a1a1a;
+    border-left: 1px solid #333;
+    overflow-y: auto;
+    padding: 15px;
+  }
+  .section {
+    background: #222;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .section h4 {
+    margin: 0 0 8px 0;
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .sc-btn {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin: 3px 0;
+    background: #181818;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: #ccc;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: left;
+  }
+  .sc-btn:hover { border-color: #4fc3f7; }
+  .sc-btn.on { border-color: #4fc3f7; background: #1a2a35; }
+
+  .algo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .algo-btn {
+    padding: 7px;
+    background: #181818;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: #ccc;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .algo-btn:hover { border-color: #4fc3f7; }
+  .algo-btn.on { border-color: #ffd43b; background: #2a2518; }
+
+  .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; }
+
+  .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .stat-box {
+    background: #181818;
+    border-radius: 4px;
+    padding: 8px;
+  }
+  .stat-box .lbl { font-size: 9px; color: #666; text-transform: uppercase; }
+  .stat-box .val { font-size: 16px; font-weight: bold; margin-top: 2px; }
+
+  .path-box {
+    font-size: 11px;
+    color: #999;
+    word-wrap: break-word;
+    max-height: 100px;
+    overflow-y: auto;
+    line-height: 1.7;
+  }
+  .ntag {
+    display: inline-block;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 2px;
+    padding: 0 4px;
+    color: #ddd;
+    font-size: 10px;
+    margin: 1px;
+  }
+
+  .ctrl-row { display: flex; gap: 8px; align-items: center; }
+  .play-btn {
+    padding: 6px 14px;
+    background: #4fc3f7;
+    border: none;
+    border-radius: 4px;
+    color: #111;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .play-btn:hover { opacity: 0.85; }
+  .slider-wrap { flex: 1; }
+  .slider-wrap input { width: 100%; }
+  .slider-lbl { font-size: 9px; color: #666; }
+
+  table.cmp { width: 100%; font-size: 11px; border-collapse: collapse; }
+  table.cmp th { text-align: left; padding: 4px; border-bottom: 1px solid #333; color: #888; font-size: 10px; }
+  table.cmp td { padding: 4px; border-bottom: 1px solid #2a2a2a; }
+  .best { color: #ffd43b; font-weight: bold; }
+
+  .legend-row { display: flex; gap: 10px; flex-wrap: wrap; font-size: 10px; }
+  .legend-row span { display: flex; align-items: center; gap: 3px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <b>CS F407</b> &mdash; Campus Food Delivery Agent &mdash; Group 29 &mdash; D3
+</div>
+
+<div class="wrapper">
+  <div class="graph-area">
+    <canvas id="c"></canvas>
+  </div>
+
+  <div class="panel">
+    <div class="section">
+      <h4>Scenario</h4>
+      <div id="scBtns"></div>
+    </div>
+    <div class="section">
+      <h4>Algorithm</h4>
+      <div class="algo-grid" id="algBtns"></div>
+    </div>
+    <div class="section">
+      <h4>Animation</h4>
+      <div class="ctrl-row">
+        <button class="play-btn" id="playBtn" onclick="toggleAnim()">&#9654; Play</button>
+        <div class="slider-wrap">
+          <input type="range" id="slider" min="0" max="100" value="100" oninput="onSlide()">
+          <div class="slider-lbl" id="sLabel">0/0</div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h4>Stats</h4>
+      <div class="stats-row">
+        <div class="stat-box"><div class="lbl">Cost</div><div class="val" id="sCost">&mdash;</div></div>
+        <div class="stat-box"><div class="lbl">Expanded</div><div class="val" id="sExp">&mdash;</div></div>
+        <div class="stat-box"><div class="lbl">Generated</div><div class="val" id="sGen">&mdash;</div></div>
+        <div class="stat-box"><div class="lbl">Time</div><div class="val" id="sTime">&mdash;</div></div>
+      </div>
+    </div>
+    <div class="section">
+      <h4>Path</h4>
+      <div class="path-box" id="pathBox">pick a scenario</div>
+    </div>
+    <div class="section">
+      <h4>All Algorithms</h4>
+      <table class="cmp">
+        <thead><tr><th>Algo</th><th>Cost</th><th>Exp</th><th>Time</th></tr></thead>
+        <tbody id="cmpBody"></tbody>
+      </table>
+    </div>
+    <div class="section">
+      <h4>Legend</h4>
+      <div class="legend-row">
+        <span><div class="dot" style="background:#ff6b6b"></div>Pickup</span>
+        <span><div class="dot" style="background:#51cf66"></div>Delivery</span>
+        <span><div class="dot" style="background:rgba(79,195,247,0.4)"></div>Explored</span>
+        <span><div class="dot" style="background:#ffd43b"></div>Path</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var D = __VIZ_DATA__;
+
+var algoColors = {"BFS":"#4fc3f7","DFS":"#ff6b9d","A*":"#ffd43b","IDA*":"#51cf66"};
+
+var curSc = 0, curAlg = 2;
+var step = 0, maxStep = 0;
+var isPlaying = false, animId = null;
+
+var cv = document.getElementById('c');
+var cx = cv.getContext('2d');
+
+function resize() {
+  var r = cv.parentElement.getBoundingClientRect();
+  cv.width = r.width * 2;
+  cv.height = r.height * 2;
+  cv.style.width = r.width + 'px';
+  cv.style.height = r.height + 'px';
+  cx.setTransform(2, 0, 0, 2, 0, 0);
+  render();
+}
+
+function mapXY(gx, gy) {
+  var w = cv.width/2, h = cv.height/2;
+  var sx = (w - 80) / 670, sy = (h - 80) / 600;
+  var s = Math.min(sx, sy);
+  var ox = (w - 670*s)/2 + 20, oy = (h - 600*s)/2 + 20;
+  return [gx*s + ox, gy*s + oy];
+}
+
+function render() {
+  var w = cv.width/2, h = cv.height/2;
+  cx.clearRect(0, 0, w, h);
+
+  var sc = D.scenarios[curSc];
+  var res = sc.results[curAlg];
+  var trace = res.trace;
+  var path = res.path;
+  var shown = step;
+
+  // which nodes explored so far
+  var explored = {};
+  for (var i = 0; i < Math.min(shown, trace.length); i++) explored[trace[i]] = true;
+
+  // order nodes
+  var pickups = {}, deliveries = {};
+  sc.orders.forEach(function(o) { pickups[o.pickup] = true; deliveries[o.delivery] = true; });
+
+  // edges
+  D.edges.forEach(function(e) {
+    var p1 = mapXY(D.nodes[e.u].x, D.nodes[e.u].y);
+    var p2 = mapXY(D.nodes[e.v].x, D.nodes[e.v].y);
+    cx.beginPath();
+    cx.moveTo(p1[0], p1[1]);
+    cx.lineTo(p2[0], p2[1]);
+    cx.strokeStyle = 'rgba(60,60,80,0.4)';
+    cx.lineWidth = 1;
+    cx.stroke();
+    // weight
+    cx.fillStyle = 'rgba(80,80,110,0.45)';
+    cx.font = '7px monospace';
+    cx.textAlign = 'center';
+    cx.fillText(e.w, (p1[0]+p2[0])/2, (p1[1]+p2[1])/2 - 3);
+  });
+
+  // path highlight (only when animation done)
+  if (shown >= maxStep && path.length > 1) {
+    var col = algoColors[res.algorithm] || '#ffd43b';
+    cx.lineWidth = 3;
+    cx.strokeStyle = col;
+    cx.shadowColor = col;
+    cx.shadowBlur = 6;
+    for (var i = 0; i < path.length - 1; i++) {
+      var a = mapXY(D.nodes[path[i]].x, D.nodes[path[i]].y);
+      var b = mapXY(D.nodes[path[i+1]].x, D.nodes[path[i+1]].y);
+      cx.beginPath(); cx.moveTo(a[0], a[1]); cx.lineTo(b[0], b[1]); cx.stroke();
+    }
+    cx.shadowBlur = 0;
+  }
+
+  // draw nodes
+  D.nodes.forEach(function(n) {
+    var p = mapXY(n.x, n.y);
+    var isPick = pickups[n.id];
+    var isDel = deliveries[n.id];
+    var isExp = explored[n.id];
+    var onPath = shown >= maxStep && path.indexOf(n.id) >= 0;
+    var isStart = n.id === sc.start;
+
+    var r = 11;
+    var fill = '#222';
+    var stroke = '#444';
+
+    if (isExp) { fill = 'rgba(79,195,247,0.12)'; stroke = 'rgba(79,195,247,0.5)'; }
+    if (isPick) { fill = isExp ? 'rgba(255,107,107,0.25)' : 'rgba(255,107,107,0.1)'; stroke = '#ff6b6b'; r = 13; }
+    if (isDel) { fill = isExp ? 'rgba(81,207,102,0.25)' : 'rgba(81,207,102,0.1)'; stroke = '#51cf66'; r = 13; }
+    if (onPath) { cx.shadowColor = algoColors[res.algorithm]||'#ffd43b'; cx.shadowBlur = 8; }
+    if (isStart) { r = 15; stroke = '#fff'; }
+
+    cx.beginPath();
+    if (isPick) {
+      cx.arc(p[0], p[1], r, 0, Math.PI*2);
+    } else {
+      // square-ish for non-pickup nodes
+      var s = r;
+      cx.rect(p[0]-s, p[1]-s, s*2, s*2);
+    }
+    cx.fillStyle = fill;
+    cx.fill();
+    cx.strokeStyle = stroke;
+    cx.lineWidth = isStart ? 2 : 1;
+    cx.stroke();
+    cx.shadowBlur = 0;
+
+    // label
+    cx.fillStyle = onPath ? '#fff' : (isExp ? '#bbb' : '#777');
+    cx.font = (onPath ? 'bold ' : '') + '9px monospace';
+    cx.textAlign = 'center';
+    cx.textBaseline = 'middle';
+    cx.fillText(n.short, p[0], p[1]);
+
+    if (isPick || isDel || isStart) {
+      cx.fillStyle = '#555';
+      cx.font = '7px sans-serif';
+      cx.fillText(n.name, p[0], p[1] - r - 5);
+    }
+  });
+
+  // animated agent marker
+  if (shown < maxStep && shown < trace.length) {
+    var an = trace[shown];
+    var ap = mapXY(D.nodes[an].x, D.nodes[an].y);
+    cx.beginPath();
+    cx.arc(ap[0], ap[1], 18, 0, Math.PI*2);
+    cx.fillStyle = 'rgba(79,195,247,0.15)';
+    cx.fill();
+    cx.strokeStyle = '#4fc3f7';
+    cx.lineWidth = 2;
+    cx.stroke();
+  }
+
+  // bottom text
+  cx.fillStyle = '#555';
+  cx.font = '10px monospace';
+  cx.textAlign = 'left';
+  cx.fillText(sc.name + ' | ' + res.algorithm + ' | ' + Math.min(shown,trace.length) + '/' + trace.length, 8, h-8);
+}
+
+// ---- UI stuff ----
+
+function buildUI() {
+  var sdiv = document.getElementById('scBtns');
+  D.scenarios.forEach(function(sc, i) {
+    var b = document.createElement('button');
+    b.className = 'sc-btn' + (i === curSc ? ' on' : '');
+    var ordTxt = sc.orders.map(function(o) {
+      return '<span style="color:#ff6b6b">' + D.nodes[o.pickup].short + '</span>->' +
+             '<span style="color:#51cf66">' + D.nodes[o.delivery].short + '</span>';
+    }).join(', ');
+    b.innerHTML = '<b>' + sc.name + '</b> &mdash; ' + ordTxt;
+    b.onclick = function() { pickScenario(i); };
+    sdiv.appendChild(b);
+  });
+
+  var adiv = document.getElementById('algBtns');
+  ["BFS","DFS","A*","IDA*"].forEach(function(name, i) {
+    var b = document.createElement('button');
+    b.className = 'algo-btn' + (i === curAlg ? ' on' : '');
+    b.innerHTML = '<span class="dot" style="background:'+algoColors[name]+'"></span>' + name;
+    b.onclick = function() { pickAlgo(i); };
+    adiv.appendChild(b);
+  });
+
+  refresh();
+}
+
+function pickScenario(i) {
+  curSc = i;
+  stopAnim();
+  document.querySelectorAll('.sc-btn').forEach(function(b,j) {
+    b.className = 'sc-btn' + (j===i ? ' on' : '');
+  });
+  refresh();
+}
+
+function pickAlgo(i) {
+  curAlg = i;
+  stopAnim();
+  document.querySelectorAll('.algo-btn').forEach(function(b,j) {
+    b.className = 'algo-btn' + (j===i ? ' on' : '');
+  });
+  refresh();
+}
+
+function refresh() {
+  var sc = D.scenarios[curSc];
+  var res = sc.results[curAlg];
+
+  maxStep = res.trace.length;
+  step = maxStep;
+
+  var sl = document.getElementById('slider');
+  sl.max = maxStep;
+  sl.value = maxStep;
+  document.getElementById('sLabel').textContent = step + '/' + maxStep;
+
+  // stats
+  document.getElementById('sCost').textContent = res.cost >= 0 ? res.cost + 'm' : 'N/A';
+  var minC = Math.min.apply(null, sc.results.map(function(r){return r.cost}).filter(function(c){return c>=0}));
+  document.getElementById('sCost').style.color = res.cost === minC ? '#ffd43b' : '#ddd';
+  document.getElementById('sExp').textContent = res.expanded.toLocaleString();
+  document.getElementById('sGen').textContent = res.generated.toLocaleString();
+  document.getElementById('sTime').textContent = res.time_ms < 1000 ? res.time_ms + 'ms' : (res.time_ms/1000).toFixed(1) + 's';
+
+  // path
+  var pbox = document.getElementById('pathBox');
+  if (res.path.length > 0) {
+    pbox.innerHTML = res.path.map(function(n){
+      return '<span class="ntag">' + D.nodes[n].short + '</span>';
+    }).join(' &rarr; ');
+  } else {
+    pbox.textContent = 'no solution';
+  }
+
+  // comparison table
+  var tbody = document.getElementById('cmpBody');
+  tbody.innerHTML = '';
+  sc.results.forEach(function(r) {
+    var tr = document.createElement('tr');
+    var isBest = r.cost === minC && r.cost >= 0;
+    var t = r.time_ms < 1000 ? r.time_ms + 'ms' : (r.time_ms/1000).toFixed(1) + 's';
+    tr.innerHTML = '<td><span class="dot" style="background:'+algoColors[r.algorithm]+'"></span>'+r.algorithm+'</td>'
+      + '<td class="'+(isBest?'best':'')+'">'+(r.cost>=0?r.cost+'m':'N/A')+'</td>'
+      + '<td>'+r.expanded.toLocaleString()+'</td>'
+      + '<td>'+t+'</td>';
+    tbody.appendChild(tr);
+  });
+
+  render();
+}
+
+function onSlide() {
+  step = parseInt(document.getElementById('slider').value);
+  document.getElementById('sLabel').textContent = step + '/' + maxStep;
+  render();
+}
+
+function toggleAnim() {
+  if (isPlaying) { stopAnim(); }
+  else {
+    isPlaying = true;
+    document.getElementById('playBtn').innerHTML = '&#9646;&#9646; Pause';
+    if (step >= maxStep) step = 0;
+    runAnim();
+  }
+}
+function stopAnim() {
+  isPlaying = false;
+  document.getElementById('playBtn').innerHTML = '&#9654; Play';
+  if (animId) cancelAnimationFrame(animId);
+}
+
+var lastT = 0;
+function runAnim(ts) {
+  if (!isPlaying) return;
+  if (!ts) ts = 0;
+  if (ts - lastT > 35) {
+    lastT = ts;
+    step++;
+    if (step > maxStep) { step = maxStep; stopAnim(); }
+    document.getElementById('slider').value = step;
+    document.getElementById('sLabel').textContent = step + '/' + maxStep;
+    render();
+  }
+  animId = requestAnimationFrame(runAnim);
+}
+
+window.addEventListener('resize', resize);
+window.addEventListener('load', function() { buildUI(); resize(); });
+</script>
+</body>
+</html>

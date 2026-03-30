@@ -1,0 +1,175 @@
+Loaded campus graph: 26 nodes, 41 edges
+Floyd-Warshall done.
+Connectivity check: passed
+
+
+=================================================================
+  Easy (K=2)  |  K=2  |  Start: MAL  |  End: MAL
+  Orders: [0] FM->RAM  [1] DOM->BDH
+=================================================================
+
+--- BFS ---
+  Cost:      2120 m
+  Hops:      13 nodes
+  Expanded:  161
+  Generated: 189
+  Frontier:  30
+  Time:      0.41 ms
+  Route:     MAL -> DOM -> BDH -> GAN -> KRI -> FD2 -> FD1 -> FM -> FD1 -> FD2 -> FD3 -> RAM -> MAL
+
+--- DFS ---
+  Cost:      2520 m
+  Hops:      14 nodes
+  Expanded:  67
+  Generated: 138
+  Frontier:  72
+  Time:      0.17 ms
+  Route:     MAL -> DOM -> BDH -> GAN -> KRI -> VK -> FD1 -> FM -> FD1 -> VK -> KRI -> RAM -> DOM -> MAL
+
+--- A* ---
+  Cost:      2030 m
+  Hops:      14 nodes
+  Expanded:  49
+  Generated: 93
+  Frontier:  43
+  Time:      0.91 ms
+  Route:     MAL -> DOM -> BDH -> GAN -> KRI -> FD2 -> FD1 -> FM -> FD1 -> FD2 -> FD3 -> RAM -> DOM -> MAL
+
+--- IDA* ---
+  Cost:      2030 m
+  Hops:      14 nodes
+  Expanded:  3254
+  Generated: 6583
+  Frontier:  14
+  Time:      80.09 ms
+  Route:     MAL -> DOM -> BDH -> GAN -> KRI -> FD2 -> FD1 -> FM -> FD1 -> FD2 -> FD3 -> RAM -> DOM -> MAL
+
+=================================================================
+  Medium (K=4)  |  K=4  |  Start: MAL  |  End: MAL
+  Orders: [0] FM->SR  [1] DOM->GAN  [2] ANC->VK  [3] LOT->ASH
+=================================================================
+
+--- BFS ---
+  Cost:      3770 m
+  Hops:      22 nodes
+  Expanded:  5475
+  Generated: 5795
+  Frontier:  609
+  Time:      15.57 ms
+  Route:     MAL -> LOT -> MAL -> DOM -> BDH -> GAN -> SHK -> ANC -> ASH -> CVR -> RP -> FD1 -> FM -> WS -> SR -> WS -> FM -> FD1 -> VK -> KRI -> RAM -> MAL
+
+--- DFS ---
+  Cost:      6320 m
+  Hops:      29 nodes
+  Expanded:  115
+  Generated: 228
+  Frontier:  98
+  Time:      0.33 ms
+  Route:     MAL -> LOT -> MRA -> VYS -> SHK -> ANC -> ASH -> BHG -> VK -> KRI -> RAM -> DOM -> RAM -> KRI -> GAN -> KRI -> VK -> FD1 -> FM -> WS -> SR -> WS -> FM -> FD1 -> VK -> KRI -> RAM -> DOM -> MAL
+
+--- A* ---
+  Cost:      3500 m
+  Hops:      23 nodes
+  Expanded:  308
+  Generated: 595
+  Frontier:  250
+  Time:      9.83 ms
+  Route:     MAL -> LOT -> MAL -> DOM -> BDH -> GAN -> SHK -> ANC -> ASH -> CVR -> RP -> FD1 -> FM -> WS -> SR -> WS -> FM -> FD1 -> VK -> KRI -> RAM -> DOM -> MAL
+
+--- IDA* ---
+  Cost:      3500 m
+  Hops:      23 nodes
+  Expanded:  35440
+  Generated: 94585
+  Frontier:  23
+  Time:      1417.03 ms
+  Route:     MAL -> LOT -> MAL -> DOM -> BDH -> GAN -> SHK -> ANC -> ASH -> CVR -> RP -> FD1 -> FM -> WS -> SR -> WS -> FM -> FD1 -> VK -> KRI -> RAM -> DOM -> MAL
+
+=================================================================
+  Hard (K=6)  |  K=6  |  Start: MAL  |  End: MAL
+  Orders: [0] FM->RAM  [1] DOM->SR  [2] ANC->VK  [3] LOT->BHG  [4] CNOT->RP  [5] FM->VYS
+=================================================================
+
+--- BFS ---
+  Cost:      6390 m
+  Hops:      27 nodes
+  Expanded:  25254
+  Generated: 26651
+  Frontier:  2623
+  Time:      102.21 ms
+  Route:     MAL -> LOT -> MAL -> DOM -> RAM -> FD3 -> FD2 -> FD1 -> FM -> WS -> SR -> WS -> FM -> FD1 -> VK -> BHG -> ANC -> SHK -> VYS -> CNOT -> GATE -> CVR -> RP -> VK -> KRI -> RAM -> MAL
+
+--- DFS ---
+  Cost:      13860 m
+  Hops:      56 nodes
+  Expanded:  148
+  Generated: 295
+  Frontier:  146
+  Time:      0.53 ms
+  Route:     MAL -> RAM -> KRI -> GAN -> SHK -> VYS -> CNOT -> MRA -> LOT -> MRA -> VYS -> SHK -> ANC -> BHG -> VK -> KRI -> RAM -> DOM -> RAM -> KRI -> GAN -> SHK -> ANC -> ASH -> CVR -> RP -> FD1 -> FM -> FD1 -> RP -> CVR -> GATE -> CNOT -> VYS -> SHK -> ANC -> ASH -> CVR -> RP -> VK -> KRI -> RAM -> KRI -> VK -> FD1 -> FM -> WS -> SR -> WS -> FM -> FD1 -> VK -> KRI -> RAM -> DOM -> MAL
+
+--- A* ---
+  Cost:      5330 m
+  Hops:      28 nodes
+  Expanded:  1183
+  Generated: 1966
+  Frontier:  636
+  Time:      52.51 ms
+  Route:     MAL -> LOT -> MAL -> DOM -> RAM -> FD3 -> FD2 -> FD1 -> FM -> WS -> SR -> WS -> FM -> FD1 -> VK -> BHG -> ANC -> SHK -> VYS -> CNOT -> GATE -> CVR -> RP -> VK -> KRI -> RAM -> DOM -> MAL
+
+--- IDA* ---
+  Cost:      5330 m
+  Hops:      28 nodes
+  Expanded:  1569200
+  Generated: 3975578
+  Frontier:  28
+  Time:      97648.72 ms
+  Route:     MAL -> LOT -> MAL -> DOM -> RAM -> FD3 -> FD2 -> FD1 -> FM -> WS -> SR -> WS -> FM -> FD1 -> VK -> BHG -> ANC -> SHK -> VYS -> CNOT -> GATE -> CVR -> RP -> VK -> KRI -> RAM -> DOM -> MAL
+
+=================================================================
+  COMPARISON TABLE
+=================================================================
+Scenario      Algo     Cost  Expanded  Generated  Frontier      Time
+--------------------------------------------------------------------
+Easy (K=2)    BFS      2120       161        189        30    0.41ms
+Easy (K=2)    DFS      2520        67        138        72    0.17ms
+Easy (K=2)    A*       2030        49         93        43    0.91ms
+Easy (K=2)    IDA*     2030      3254       6583        14   80.09ms
+--------------------------------------------------------------------
+Medium (K=4)  BFS      3770      5475       5795       609   15.57ms
+Medium (K=4)  DFS      6320       115        228        98    0.33ms
+Medium (K=4)  A*       3500       308        595       250    9.83ms
+Medium (K=4)  IDA*     3500     35440      94585        23      1.4s
+--------------------------------------------------------------------
+Hard (K=6)    BFS      6390     25254      26651      2623  102.21ms
+Hard (K=6)    DFS     13860       148        295       146    0.53ms
+Hard (K=6)    A*       5330      1183       1966       636   52.51ms
+Hard (K=6)    IDA*     5330   1569200    3975578        28     97.6s
+--------------------------------------------------------------------
+
+=================================================================
+  D2 PREDICTIONS vs D3 ACTUAL
+=================================================================
+
+  Easy (K=2)
+  Algo        D2 Predicted     D3 Actual      Cost
+  BFS                 ~500           161     2120m
+  DFS                 ~500            67     2520m
+  A*                  ~270            49     2030m
+  IDA*             ~50-100          3254     2030m
+
+  Medium (K=4)
+  Algo        D2 Predicted     D3 Actual      Cost
+  BFS                ~5400          5475     3770m
+  DFS                ~5400           115     6320m
+  A*                 ~1500           308     3500m
+  IDA*           ~500-1500         35440     3500m
+
+  Hard (K=6)
+  Algo        D2 Predicted     D3 Actual      Cost
+  BFS               ~90000         25254     6390m
+  DFS               ~90000           148    13860m
+  A*                 ~4500          1183     5330m
+  IDA*            ~10k-50k       1569200     5330m
+
+Saved viz data to /home/claude/campus_delivery/viz_data.json
